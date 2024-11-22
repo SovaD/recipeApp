@@ -70,22 +70,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         fillRecipesView(recipies);
                         fillCategoryView(recipies);
-                        tToSearch.addTextChangedListener(new TextWatcher() {
-                            @Override
-                            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                            }
-
-                            @Override
-                            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                                searchRecipe(recipies);
-                            }
-
-                            @Override
-                            public void afterTextChanged(Editable s) {
-
-                            }
-                        });
+                        searchRecipe(recipies);
                     }
                 }
 
@@ -111,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(int position) {
                 Intent intent = new Intent(getApplicationContext(), ContentActivity.class);
-                intent.putExtra("recipe",list.get(position) );
+                intent.putExtra("recipe", list.get(position));
                 startActivity(intent);
             }
         });
@@ -156,13 +141,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void searchRecipe(List<Recipe> list) {
+        tToSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-        String text = tToSearch.getText().toString().toLowerCase();
-        List<Recipe> newList = list.stream()
-                .filter(x -> x.getName().toLowerCase().equals(text) ||
-                        x.getIngredients().contains(text))
-                .collect(Collectors.toList());
-        fillRecipesView(newList);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String text = tToSearch.getText().toString();
+                List<Recipe> newList = list.stream()
+                        .filter(x -> x.getName().toLowerCase().contains(text.toLowerCase()) ||
+                                x.getIngredients().contains(text))
+                        .collect(Collectors.toList());
+                fillRecipesView(newList);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
     }
 
 }
